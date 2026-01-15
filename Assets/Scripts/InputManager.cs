@@ -1,0 +1,46 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class InputManager : MonoBehaviour
+{
+    private PlayerInputActions _playerInputActions;
+
+    public System.Action OnJump;
+
+    public System.Action<float> OnMove;
+    
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Awake()
+    {
+        _playerInputActions = new PlayerInputActions();
+        _playerInputActions.Enable();
+    }
+
+    void OnEnable()
+    {
+        _playerInputActions.Player.Jump.performed += OnJumpPressed;
+        //_playerInputActions.Player.Horizontal.performed += OnMovement;
+    }
+
+    void OnDisable()
+    {
+        _playerInputActions.Player.Jump.performed -= OnJumpPressed;
+        //_playerInputActions.Player.Horizontal.performed -= OnMovement;
+    }
+
+    void OnJumpPressed(InputAction.CallbackContext context)
+    {
+        OnJump?.Invoke();
+    }
+
+    void OnMovement()
+    {
+        //Debug.Log("Move Value = " + context.ReadValue<float>());
+        OnMove?.Invoke(_playerInputActions.Player.Horizontal.ReadValue<float>());
+    }
+
+    void Update()
+    {
+        OnMovement();
+    }
+}
