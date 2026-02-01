@@ -44,13 +44,22 @@ public class PlayerController : MonoBehaviour
         inputManager.OnMove -= HandleMoveInput;
     }
 
-    void HandleJumpInput()
+    void HandleJumpInput(bool isJumping)
     {
         //apply the jump force
         if (_playerRb == null) return;
+
+        if (_isOnGround && isJumping)
+        {
+            _playerRb.AddForceY(jumpForce, ForceMode2D.Impulse); 
+        }
+
+        if (!isJumping)
+        {
+            // multiplying linear velocity by .5 rather than setting it to 0, so player doesn't instantly stop going up, so its smoother
+            _playerRb.linearVelocityY *= .5f;
+        }
         
-        if(_isOnGround)
-            _playerRb.AddForceY(jumpForce, ForceMode2D.Impulse);
     }
 
     void HandleMoveInput(float value)
