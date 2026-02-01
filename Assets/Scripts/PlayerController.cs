@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _playerRb;
     private bool _isOnGround;
 
+    public MovingPlatformGrabber movingPlatformGrabber;
+    public NewMovingPlatform newMovingPlatform;
+
     void Awake()
     {
         _playerRb = GetComponent<Rigidbody2D>();
@@ -63,8 +66,17 @@ public class PlayerController : MonoBehaviour
     void HandleMovement()
     {
         if (_playerRb == null) return;
-        
-        _playerRb.linearVelocityX = moveSpeed * _horizontalInput;
+
+        // if player is on platform, add linearVelocity of the moving platform to the player
+        if (movingPlatformGrabber.playerOnPlatform)
+        { 
+            _playerRb.linearVelocityX = (moveSpeed * _horizontalInput) + newMovingPlatform.rb.linearVelocityX;
+        }
+
+        else
+        {
+            _playerRb.linearVelocityX = moveSpeed * _horizontalInput;
+        }
     }
 
     void GroundCheck()
@@ -81,7 +93,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnDrawGizmos()

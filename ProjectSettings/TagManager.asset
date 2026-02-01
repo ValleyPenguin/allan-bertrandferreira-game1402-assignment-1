@@ -7,6 +7,9 @@ TagManager:
   - Ground
   - Coin
   - Health
+  - PlatformGrabber
+  - PlatformPointOne
+  - PlatformPointTwo
   layers:
   - Default
   - TransparentFX
