@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -23,8 +24,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _playerRb;
     private bool _isOnGround;
 
-    public MovingPlatformGrabber movingPlatformGrabber;
-    public NewMovingPlatform newMovingPlatform;
+    private MovingPlatformGrabber _currentGrabber;
+    private NewMovingPlatform _currentPlatform;
 
     void Awake()
     {
@@ -65,12 +66,14 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        if (_playerRb == null) return;
-
         // if player is on platform, add linearVelocity of the moving platform to the player
-        if (movingPlatformGrabber.playerOnPlatform)
+        //if (_currentGrabber.playerOnPlatform)
+        
+        if (_playerRb == null) return;
+        
+        if (_currentGrabber != null && _currentPlatform != null)
         { 
-            _playerRb.linearVelocityX = (moveSpeed * _horizontalInput) + newMovingPlatform.rb.linearVelocityX;
+            _playerRb.linearVelocityX = (moveSpeed * _horizontalInput) + _currentPlatform.rb.linearVelocityX;
         }
 
         else
@@ -84,21 +87,27 @@ public class PlayerController : MonoBehaviour
         _isOnGround = Physics2D.Raycast((Vector2)transform.position + startPointOffset, Vector2.down, groundCheckDistance, groundLayer);
     }
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     void OnDrawGizmos()
     {
         Debug.DrawLine((Vector2)transform.position + startPointOffset, (Vector2)transform.position + startPointOffset + Vector2.down, _isOnGround ? Color.green : Color.red);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("PlatformGrabber"))
+        {
+            _currentGrabber = other.gameObject.GetComponent<MovingPlatformGrabber>();
+            _currentPlatform = other.transform.parent.GetComponent<NewMovingPlatform>();
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("PlatformGrabber"))
+        {
+            _currentGrabber = null;
+            _currentPlatform  = null; 
+        }
     }
     
 }
