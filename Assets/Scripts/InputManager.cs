@@ -26,6 +26,7 @@ public class InputManager : MonoBehaviour
     {
         _playerInputActions.Player.Jump.performed -= OnJumpPressed;
         _playerInputActions.Player.Jump.canceled -= OnJumpPressed;
+        _playerInputActions.Disable();
         //_playerInputActions.Player.Horizontal.performed -= OnMovement;
     }
 

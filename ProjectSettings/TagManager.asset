@@ -10,6 +10,7 @@ TagManager:
   - PlatformGrabber
   - PlatformPointOne
   - PlatformPointTwo
+  - Spike
   layers:
   - Default
   - TransparentFX
