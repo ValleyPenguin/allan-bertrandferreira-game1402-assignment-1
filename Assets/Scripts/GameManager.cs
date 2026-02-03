@@ -6,8 +6,11 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public TMP_Text coinText;
+    public TMP_Text timerText;
     
     [SerializeField] private int coinCount = 0;
+
+    private float _levelTimer = 0f;
 
     // Singleton since there will only be one of this script in the game, and I want it easily accessible by the coin prefabs
     public static GameManager Instance { get; private set; }
@@ -37,6 +40,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        _levelTimer += Time.deltaTime;
+        
+        string minutes = ((int)_levelTimer / 60).ToString("00");
+        string seconds = ((int)_levelTimer % 60).ToString("00");
+        
         coinText.text = coinCount.ToString();
+        timerText.text = minutes + ":" + seconds;
     }
 }

@@ -9,13 +9,12 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float jumpForce = 700f;
     
-    private float coyoteTime;
+    private float _coyoteTime;
      
     [SerializeField] private float coyoteTimeDuration = 1f;
-
-    private bool alreadyJumped = false;
-    private bool justJumped = false;
-    private bool isDead = false;
+    
+    private bool _justJumped = false;
+    private bool _isDead = false;
     
     
     [SerializeField] private InputManager inputManager;
@@ -46,13 +45,13 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        isDead = false;
+        _isDead = false;
     }
     
     void Awake()
     {
         _playerRb = GetComponent<Rigidbody2D>();
-        coyoteTime = coyoteTimeDuration;
+        _coyoteTime = coyoteTimeDuration;
     }
     
     void OnEnable()
@@ -69,21 +68,12 @@ public class PlayerController : MonoBehaviour
 
     void HandleJumpInput(bool isJumping)
     {
-        //apply the jump force
         if (_playerRb == null) return;
-
-        /*if (((_isOnGround || coyoteTime > 0f) && !alreadyJumped) && isJumping && !isDead)
-        {
-            coyoteTime = 0f;
-            //alreadyJumped = true;
-            _playerRb.AddForceY(jumpForce, ForceMode2D.Force);
-        }*/
         
-        //if (_isOnGround || (coyoteTime > 0 && !alreadyJumped) && isJumping && !isDead)
-        if((_isOnGround || coyoteTime > 0) && isJumping && !justJumped && !isDead)
+        if((_isOnGround || _coyoteTime > 0) && isJumping && !_justJumped && !_isDead)
         {
-            coyoteTime = 0f;
-            justJumped = true;
+            _coyoteTime = 0f;
+            _justJumped = true;
             //alreadyJumped = true;
             _playerRb.AddForceY(jumpForce, ForceMode2D.Force);
         }
@@ -102,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!isDead)
+        if (!_isDead)
         {
             HandleMovement();
         }
@@ -112,7 +102,6 @@ public class PlayerController : MonoBehaviour
     void HandleMovement()
     {
         // if player is on platform, add linearVelocity of the moving platform to the player
-        //if (_currentGrabber.playerOnPlatform)
         
         if (_playerRb == null) return;
         
@@ -150,7 +139,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Spike"))
         {
-            isDead = true;
+            _isDead = true;
             deathEffect.PlayDeathEffect();
             StartCoroutine(WaitBeforeReloadingScene(1.5f));
         }
@@ -167,75 +156,22 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        /*if (!_isOnGround && coyoteTime >= 0f)
-        {
-            coyoteTime -= Time.deltaTime;
-            alreadyJumped = false;
-        }
-        
-        if (!_isOnGround && coyoteTime < 0f)
-        {
-            alreadyJumped = true;
-        }
-
-        if (_isOnGround && _playerRb.linearVelocityY <= 0f)
-        {
-            coyoteTime = coyoteTimeDuration;
-            alreadyJumped = false;
-        }*/
-
-        /*if (_isOnGround)
-        {
-            coyoteTime = coyoteTimeDuration;
-            if (_playerRb.linearVelocityY <= 0f)
-            {
-                alreadyJumped = false;
-            }
-            
-        }
-
-        if (!_isOnGround)
-        {
-            if (coyoteTime > 0f && justJumped)
-            {
-                coyoteTime = 0f;
-                alreadyJumped = true;
-            }
-
-            if (coyoteTime > 0f && !justJumped)
-            {
-                coyoteTime -= Time.deltaTime;
-                alreadyJumped = false;
-            }
-
-            if (alreadyJumped) coyoteTime = 0f;
-        }
-
-        if (coyoteTime <= 0f)
-        {
-            if (_isOnGround)
-            {
-                alreadyJumped = false;
-                coyoteTime = coyoteTimeDuration;
-            }
-        }*/
-
         if (_isOnGround)
         {
-            coyoteTime = coyoteTimeDuration;
-            justJumped = false;
+            _coyoteTime = coyoteTimeDuration;
+            _justJumped = false;
         }
         else if (_playerRb.linearVelocityY > 0f)
         {
-            coyoteTime = 0f;
-            justJumped = true;
+            _coyoteTime = 0f;
+            _justJumped = true;
         }
         else
         {
-            coyoteTime -=  Time.deltaTime;
+            _coyoteTime -=  Time.deltaTime;
         }
         
-        Debug.Log(alreadyJumped);
+        Debug.Log(_playerRb.linearVelocityY);
     }
 
     IEnumerator WaitBeforeReloadingScene(float seconds)
