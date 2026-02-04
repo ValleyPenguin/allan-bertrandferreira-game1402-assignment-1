@@ -63,6 +63,12 @@ public class InputManager : MonoBehaviour
         OnPause?.Invoke(_isPaused);
     }
 
+    public void ResumeInput()
+    {
+        _isPaused = false;
+        OnPause?.Invoke(_isPaused);
+    }
+
     void Update()
     {
         OnMovement();

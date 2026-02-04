@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     
     [SerializeField] private int coinCount = 0;
+    
+    [SerializeField] private GameObject pauseMenu;
 
     private float _levelTimer = 0f;
 
@@ -50,6 +52,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    void Start()
+    {
+        Time.timeScale = 1;
+    }
+    
     void Update()
     {
         _levelTimer += Time.deltaTime;
@@ -61,16 +68,18 @@ public class GameManager : MonoBehaviour
         timerText.text = minutes + ":" + seconds;
     }
 
-    void Pause(bool isPaused)
+    public void Pause(bool isPaused)
     {
         if (isPaused)
         {
             Time.timeScale = 0;
+            pauseMenu.SetActive(true);
         }
 
         if (!isPaused)
         {
             Time.timeScale = 1;
+            pauseMenu.SetActive(false);
         }
     }
 }
