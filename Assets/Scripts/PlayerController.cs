@@ -92,10 +92,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!_isDead)
-        {
-            HandleMovement();
-        }
+        HandleMovement();
         GroundCheck();
     }
 
@@ -106,13 +103,27 @@ public class PlayerController : MonoBehaviour
         if (_playerRb == null) return;
         
         if (_currentGrabber != null && _currentPlatform != null)
-        { 
-            _playerRb.linearVelocityX = (moveSpeed * _horizontalInput) + _currentPlatform.rb.linearVelocityX;
+        {
+            if (!_isDead)
+            {
+                _playerRb.linearVelocityX = (moveSpeed * _horizontalInput) + _currentPlatform.rb.linearVelocityX;
+            }
+            else
+            {
+                _playerRb.linearVelocityX = 0f;
+            }
         }
 
         else
         {
-            _playerRb.linearVelocityX = moveSpeed * _horizontalInput;
+            if (!_isDead)
+            {
+                _playerRb.linearVelocityX = moveSpeed * _horizontalInput;
+            }
+            else
+            {
+                _playerRb.linearVelocityX = 0f;
+            }
         }
     }
 
@@ -171,7 +182,7 @@ public class PlayerController : MonoBehaviour
             _coyoteTime -=  Time.deltaTime;
         }
         
-        Debug.Log(_playerRb.linearVelocityY);
+        //Debug.Log(_playerRb.linearVelocityY);
     }
 
     IEnumerator WaitBeforeReloadingScene(float seconds)

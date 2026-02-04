@@ -8,12 +8,24 @@ public class GameManager : MonoBehaviour
     public TMP_Text coinText;
     public TMP_Text timerText;
     
+    [SerializeField] private InputManager inputManager;
+    
     [SerializeField] private int coinCount = 0;
 
     private float _levelTimer = 0f;
 
     // Singleton since there will only be one of this script in the game, and I want it easily accessible by the coin prefabs
     public static GameManager Instance { get; private set; }
+
+    void OnEnable()
+    {
+        inputManager.OnPause += Pause;
+    }
+
+    void OnDisable()
+    {
+        inputManager.OnPause -= Pause;
+    }
     
     private void Awake()
     {
@@ -47,5 +59,18 @@ public class GameManager : MonoBehaviour
         
         coinText.text = coinCount.ToString();
         timerText.text = minutes + ":" + seconds;
+    }
+
+    void Pause(bool isPaused)
+    {
+        if (isPaused)
+        {
+            Time.timeScale = 0;
+        }
+
+        if (!isPaused)
+        {
+            Time.timeScale = 1;
+        }
     }
 }
